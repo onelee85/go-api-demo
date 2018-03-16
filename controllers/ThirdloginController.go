@@ -26,7 +26,7 @@ var (
 	H5_APP_SECRET string = beego.AppConfig.String("h5.app.secret")
 )
 
-//https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx87f81569b7e4b5f6&redirect_uri=http%3a%2f%2ftest-user.lezhuale.com&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+//test url : https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx87f81569b7e4b5f6&redirect_uri=http%3a%2f%2ftest-user.lezhuale.com&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
 // @router /weixin_h5 [get]
 func (u *ThirdloginController) Weixin_h5() {
 	code := u.Input().Get("code")
@@ -40,7 +40,7 @@ func (u *ThirdloginController) Weixin_h5() {
 		beego.Error("weixin_h5 error :", err)
 	}
 	if _, exists := resp["access_token"]; !exists {
-		u.Data["json"] = common.ResponseResult(common.ErrCodeInvalidParams, "")
+		u.Data["json"] = common.ResponseResult(common.ErrCodeInvalidParams, nil)
 		u.ServeJSON()
 		return
 	}

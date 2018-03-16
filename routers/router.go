@@ -9,15 +9,19 @@ package routers
 
 import (
 	"user/controllers"
+	"user/filter"
 
 	"github.com/astaxie/beego"
 )
 
 func init() {
+	//为需要token验证的的request注册filter
+	beego.InsertFilter("/v1/user/*", beego.BeforeRouter, filter.OAuthFilter)
+
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
+		beego.NSNamespace("/user",
 			beego.NSInclude(
-				&controllers.ObjectController{},
+				&controllers.UserController{},
 			),
 		),
 		beego.NSNamespace("/thirdlogin",

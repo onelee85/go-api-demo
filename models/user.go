@@ -25,7 +25,7 @@ type User struct {
 	Weixin_unionid      string  `json:"-"`
 }
 
-func GetUser(field, val string) (user *User) {
+func GetUser(field string, val interface{}) (user *User) {
 	user = &User{}
 	query := bson.M{}
 	query[field] = val
