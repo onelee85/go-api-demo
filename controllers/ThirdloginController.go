@@ -16,9 +16,14 @@ type ThirdloginController struct {
 }
 
 const (
-	H5_APP_ID     = "wx87f81569b7e4b5f6"
-	H5_APP_SECRET = "8421fd4781b1c29077c2e82e71ce3d2a"
-	WEIXIN_URL    = "https://api.weixin.qq.com/sns/"
+	//H5_APP_ID     = "wx87f81569b7e4b5f6"
+	//H5_APP_SECRET = "8421fd4781b1c29077c2e82e71ce3d2a"
+	WEIXIN_URL = "https://api.weixin.qq.com/sns/"
+)
+
+var (
+	H5_APP_ID     string = beego.AppConfig.String("h5.app.id")
+	H5_APP_SECRET string = beego.AppConfig.String("h5.app.secret")
 )
 
 //https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx87f81569b7e4b5f6&redirect_uri=http%3a%2f%2ftest-user.lezhuale.com&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
@@ -55,7 +60,7 @@ func (u *ThirdloginController) Weixin_h5() {
 	pic := resp["headimgurl"].(string)
 	sex := resp["sex"].(float64) //1:男, 0:女
 	//用户是否已经存在
-	user := models.GetUser("weixin_unionid", unionid)
+	user := models.GetUser("weixin_unionid1", unionid)
 	//生成新用户
 	if user.Id_ == 0 {
 		newUser := &models.User{
@@ -68,7 +73,12 @@ func (u *ThirdloginController) Weixin_h5() {
 			Sex:                 sex,
 		}
 		beego.Debug("weixin_h5 user :", &user)
-		user = models.BuildUser(newUser)
+		user, err = models.BuildUser(newUser)
+		if err != nil {
+			u.Data["json"] = common.ResponseResult(common.ErrCodeDuplicated, "")
+			u.ServeJSON()
+			return
+		}
 	}
 	beego.Debug("redirect_url:", redirect_url)
 	//转跳地址

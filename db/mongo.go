@@ -37,15 +37,15 @@ type MongoDataBase struct {
 var UserDb = &MongoDataBase{dbName: "account"}
 
 //对集合执行操作 增删查改, 保证session能被close
-func (db *MongoDataBase) Execute(collection string, do func(*mgo.Collection)) {
+func (db *MongoDataBase) Execute(collection string, do func(*mgo.Collection) error) error {
 	session := MongoSession()
 	defer func() {
 		session.Close()
 		beego.Debug("close session...")
 		if err := recover(); err != nil {
-			beego.Error("init mongo db", err)
+			beego.Error("Execute mongo ", err)
 		}
 	}()
 	c := session.DB(db.dbName).C(collection)
-	do(c)
+	return do(c)
 }

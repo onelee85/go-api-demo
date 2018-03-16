@@ -42,6 +42,7 @@ func initRedisKGS(kgs *RedisKGS) {
 	defer c.Close()
 	offset := beego.AppConfig.DefaultInt64("kgs.offset", 100000)
 	is_key_exit, _ := redis.Bool(c.Do("EXISTS", kgs.nextIdKey))
+	beego.Informational("init redis KGS is_key_exit:", is_key_exit)
 	if !is_key_exit {
 		_, err := c.Do("SET", kgs.nextIdKey, offset)
 		if err != nil {
