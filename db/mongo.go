@@ -10,7 +10,9 @@ import (
 var globalMgoSession *mgo.Session
 
 func init() {
-	session, err := mgo.DialWithTimeout(beego.AppConfig.String("mongo.host"), 60*time.Second)
+	mongoHost := beego.AppConfig.String("mongo.host")
+	beego.Informational("mongoHost:", mongoHost)
+	session, err := mgo.DialWithTimeout(mongoHost, 30*time.Second)
 	if err != nil {
 		beego.Error("init mongo db", err)
 	}

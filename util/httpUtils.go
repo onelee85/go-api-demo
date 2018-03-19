@@ -6,12 +6,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/astaxie/beego"
 )
 
 func Request(req *http.Request, timeout time.Duration) (body []byte, err error) {
 	client := &http.Client{
 		Timeout: timeout,
 	}
+	beego.Debug("Request URL : ", req.URL)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -22,7 +25,6 @@ func Request(req *http.Request, timeout time.Duration) (body []byte, err error) 
 	if err != nil {
 		return nil, err
 	}
-
 	return body, nil
 }
 
@@ -31,7 +33,7 @@ func RequestJSON(req *http.Request, timeout time.Duration) (result map[string]in
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("resp body : %s \n", body)
+
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		return nil, err
